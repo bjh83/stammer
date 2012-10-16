@@ -1,7 +1,8 @@
-//compiler
+package compiler
 
 import(
 	"fmt"
+	"parsetree"
 )
 
 const(
@@ -63,4 +64,3 @@ func lex(regex string) out string {
 	}
 }
 
-func parse(regex string) parseTree ParseTree {

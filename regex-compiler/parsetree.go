@@ -1,58 +1,171 @@
-//parsetree.go
+package parsetree
 
-type Type int
+import()
 
 const(
-	Star = iota
+	Pipe = iota
+	Star
 	Plus
 	Ques
-	Pipe
-	Char
+	LParen
+	RParen
 )
 
-type Pipe struct {
-	Left Juxta
-	Right Pipe_
+const(
+	Start = iota
+	Juxt
+	Quant
+	Ident
+	End
+)
+
+type Start struct {
+	Left *Juxt
+	Right *Start_
+	Empty bool
 }
 
-func (p Pipe) Evaluate() list *OpList {
-	list = p.Left.Evaluate()
-	if p.Right != nil {
-		list.Append(p.Right.Evaluate())
+func (start *Start) Parse(regex string, count *int) bool {
+	if *count >= len(regex) {
+		start.Empty = true
+		return true
+	}
+	start.Left = &Juxt{}
+	if !start.Left.Parse(regex, count) { //did not consume anything
+		return false
+	}
+	start.Right = &Start_{}
+	return start.Right.Parse(regex, count)
+}
+
+type Start_ struct {
+	Left *Juxt
+	Right *Start_
+	Empty bool
+}
+
+func (start *Start_) Parse(regex string, count *int) bool {
+	if *count >= len(regex) {
+		start.Empty = true
+		return true
+	}
+	if regex[count] == Pipe {
+		(*count)++ //consume input
+		start.Left = &Juxt{}
+		if !start.Left.Parse(regex, count) {
+			return false
+		}
+		start.Right = &Start_{}
+		return start.Right.Parse(regex, count)
+	} else {
+		start.Empty = true
+		return true
 	}
 }
 
-type Pipe_ struct {
-	Left Juxta
-	Right Pipe_
+type Juxt struct {
+	Left *Quant
+	Right *Juxt_
+	Empty bool
 }
 
-func (p Pipe_) Evaluate() list *OpList {
-
-type Juxta struct {
-	Left Quanta
-	Right Juxta_
+func (juxt *Juxt) Parse(regex string, count *int) bool {
+	if count >= len(regex) {
+		juxt.Empty = true
+		return true
+	}
+	juxt.Left = &Quant{}
+	if !juxt.Left.Parse(regex, count) {
+		return false
+	}
+	juxt.Right = &Juxt_{}
+	return juxt.Right.Parse(regex, count)
 }
 
-type Juxta_ struct {
-	Left Quanta
-	Right Juxta_
+type Juxt_ struct {
+	Left *Quant
+	Right *Juxt_
+	Empty bool
 }
 
-type Quanta struct {
-	Left, Right Prim
+func (juxt *Juxt_) Parse(regex string, count *int) bool {
+	if count >= len(regex) {
+		juxt.Empty = true
+		return true
+	}
+	if regex[count] < Pipe { //that means its a regular character
+		juxt.Left = &Quant{}
+		if !juxt.Left.Parse(regex, count) {
+			return false
+		}
+		juxt.Right = &Juxt_{}
+		return juxt.Right.Parse(regex, count)
+	} else {
+		juxt.Empty = true
+		return true
+	}
 }
 
-type Prim struct {
-	Val Evaluater
-	Op Type
+type Quant struct {
+	Left *Ident
+	Type int
+	Empty bool
 }
 
-type Evaluater interface {
-	Evaluate() OpList
+func (quant *Quant) Parse(regex string, count *int) bool {
+	if count >= len(regex) {
+		quant.Empty = true
+		return true
+	}
+	quant.Left = &Ident{}
+	if !quant.Left.Parse(regex, count) {
+		return false
+	}
+	switch(regex[*count]) {
+	case Star:
+		(*count)++
+		quant.Type = Star
+		break
+	case Plus:
+		(*count)++
+		quant.Type = Plus
+		break
+	case Ques:
+		(*count)++
+		quant.Type = Ques
+		break
+	}
+	return true
 }
 
-type Char struct {
-	Val rune
+type Ident struct {
+	Left *Start
+	Char rune
+	Empty bool
+}
+
+func (ident *Ident) Parse(regex string, count *int) bool {
+	if count >= len(regex) {
+		ident.Empty = true
+		return true
+	}
+	if regex[*count] == LParen {
+		(*count)++
+		ident.Left = &Start{}
+		if !ident.Left.Parse(regex, count) {
+			return false
+		}
+		if regex[*count] == RParen {
+			(*count)++
+			return true
+		} else {
+			return false
+		}
+	} else if regex[*count] < Pipe {
+		ident.Char = regex[(*count)++]
+		return true
+	} else {
+		return false //invalid character
+	}
 }
 
