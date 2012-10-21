@@ -10,10 +10,8 @@ const(
 	Match
 )
 
-type OpCode int
-
 type Instruct struct {
-	Opperation Opcode
+	OpCode int
 	Line1, Line2 int
 }
 
@@ -31,8 +29,8 @@ func New() *OpList {
 	return OpList{}
 }
 
-func (list *OpList) add(opperation OpCode, line1, line2 int) *Instruct {
-	node := OpNode{Instruction: Instruct{opperation, line1, line2}}
+func (list *OpList) add(opcode int, line1, line2 int) *Instruct {
+	node := OpNode{Instruction: Instruct{opcode, line1, line2}}
 	if list.Length == 0 {
 		list.Head = &node
 	} else {
@@ -84,5 +82,14 @@ func (list *OpList) Append(toAppend *OpList) {
 	list.Length += toAppend.Length
 	list.Tail.Next = toAppend.Head
 	list.Tail = toAppend.Tail
+}
+
+func (list *OpList) ToArray() []Instruct {
+	instructs := make([]Instruct, list.Length)
+	index := 0
+	for node := list.Head; node != nil; node = node.Next {
+		instructs[index++] = node.Instruction
+	}
+	return instructs
 }
 
