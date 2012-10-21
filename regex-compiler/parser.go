@@ -2,6 +2,13 @@ package parser
 
 import()
 
+func Parse(regex string) bool, *Start {
+	start := &Start{}
+	count := 0
+	success := start.Parse(regex, &count)
+	return success, start
+}
+
 func (start *Start) Parse(regex string, count *int) bool {
 	if *count >= len(regex) {
 		start.Empty = true
