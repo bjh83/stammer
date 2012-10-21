@@ -1,4 +1,4 @@
-package opcode
+package oplist
 
 import()
 

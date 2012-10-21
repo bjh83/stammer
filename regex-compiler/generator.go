@@ -1,9 +1,9 @@
 package parser
 
-import()
+import("oplist")
 
 func (start *Start) Generate() *OpList {
-	oplist := New()
+	oplist := oplist.New()
 	oplist.Start()
 	oplist.Append(start.generate())
 	oplist.Finish()
@@ -48,7 +48,7 @@ func (juxt *Juxt_) generate() *OpList {
 }
 
 func (quant *Quant) generate() *OpList {
-	oplist := New()
+	oplist := oplist.New()
 	switch quant.Type {
 	case Star:
 		save := oplist.AddSplit(1, -1)
@@ -80,7 +80,7 @@ func (ident *Ident) generate() *OpList {
 	if ident.Left != nil {
 		return ident.Left.generate()
 	}
-	oplist := New()
+	oplist := oplist.New()
 	oplist.AddChar(ident.Char)
 	return oplist
 }
