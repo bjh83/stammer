@@ -27,11 +27,11 @@ type OpNode struct {
 	Next *OpNode
 }
 
-func (*OpList) New() *OpList {
+func New() *OpList {
 	return OpList{}
 }
 
-func (list *OpList) add(opperation OpCode, line1, line2 int) {
+func (list *OpList) add(opperation OpCode, line1, line2 int) *Instruct {
 	node := OpNode{Instruction: Instruct{opperation, line1, line2}}
 	if list.Length == 0 {
 		list.Head = &node
@@ -40,17 +40,20 @@ func (list *OpList) add(opperation OpCode, line1, line2 int) {
 	}
 	list.Tail = &node
 	list.Length++
+	return &node.Instruction //return a reference so that if we do not know an 
+	// address we can figure it out later
 }
 
-func (list *OpList) AddSplit(line1, line2 int) {
-	list.add(Split, line1, line2)
+func (list *OpList) AddSplit(line1, line2 int) *Instruct {
+	return list.add(Split, line1, line2)
 }
 
-func (list *OpList) AddJump(line int) {
-	list.add(Jump, line, -1)
+func (list *OpList) AddJump(line int) *Instruct {
+	return list.add(Jump, line, -1)
 }
 
 func (list *OpList) AddChar(char rune) {
+	//No reason for this to return a reference
 	list.add(Char, int(char), -1)
 }
 
@@ -64,6 +67,12 @@ func (list *OpList) Finish() {
 
 func (list *OpList) Append(toAppend *OpList) {
 	toAdd := list.Length
+	if toAdd == 0 {
+		list.Head = toAppend.Head
+		list.Tail = toAppend.Tail
+		list.Length = toAppend.Length
+		return
+	}
 	for node := toAppend.Head; node != nil; node = node.Next {
 		if node.Line1 != -1 {
 			node.Line1 += toAdd
