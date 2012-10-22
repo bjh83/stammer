@@ -1,18 +1,18 @@
 package parser
 
 import(
-	. "../oplist"
+	"../oplist"
 )
 
-func (start *Start) Generate() *OpList {
-	oplist := New()
+func (start *Start) Generate() *oplist.OpList {
+	oplist := oplist.New()
 	oplist.Start()
 	oplist.Append(start.generate())
 	oplist.Finish()
 	return oplist
 }
 
-func (start *Start) generate() *OpList {
+func (start *Start) generate() *oplist.OpList {
 	oplist := start.Left.generate()
 	if !start.Right.Empty {
 		//this means there should be a split here
@@ -23,7 +23,7 @@ func (start *Start) generate() *OpList {
 	return oplist
 }
 
-func (start *Start_) generate() *OpList {
+func (start *Start_) generate() *oplist.OpList {
 	oplist := start.Left.generate()
 	if !start.Right.Empty {
 		save := oplist.AddSplit(oplist.Length - 1, -1)
@@ -33,7 +33,7 @@ func (start *Start_) generate() *OpList {
 	return oplist
 }
 
-func (juxt *Juxt) generate() *OpList {
+func (juxt *Juxt) generate() *oplist.OpList {
 	oplist := juxt.Left.generate()
 	if !juxt.Right.Empty {
 		oplist.Append(juxt.Right.generate())
@@ -41,7 +41,7 @@ func (juxt *Juxt) generate() *OpList {
 	return oplist
 }
 
-func (juxt *Juxt_) generate() *OpList {
+func (juxt *Juxt_) generate() *oplist.OpList {
 	oplist := juxt.Left.generate()
 	if !juxt.Right.Empty {
 		oplist.Append(juxt.Right.generate())
@@ -49,7 +49,7 @@ func (juxt *Juxt_) generate() *OpList {
 	return oplist
 }
 
-func (quant *Quant) generate() *OpList {
+func (quant *Quant) generate() *oplist.OpList {
 	oplist := oplist.New()
 	switch quant.Type {
 	case Star:
@@ -78,7 +78,7 @@ func (quant *Quant) generate() *OpList {
 	return oplist
 }
 
-func (ident *Ident) generate() *OpList {
+func (ident *Ident) generate() *oplist.OpList {
 	if ident.Left != nil {
 		return ident.Left.generate()
 	}

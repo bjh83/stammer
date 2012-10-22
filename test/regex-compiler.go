@@ -2,13 +2,14 @@ package main
 
 import(
 	compiler "../regex_compiler"
+	. "../regex_compiler/oplist"
 	"fmt"
 	"os"
 )
 
-func main(regex string) {
-	instructions := compiler.Compile(regex)
-	file, err = os.Create("test_output.txt")
+func main() {
+	instructions := compiler.Compile(os.Args[1])
+	file, err := os.Create("test_output.txt")
 	if err != nil {
 		fmt.Println("ERROR: file could not be created")
 	}

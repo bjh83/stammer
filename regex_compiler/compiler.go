@@ -7,9 +7,9 @@ import(
 	"fmt"
 )
 
-func Compile(regex string) []Instruct {
+func Compile(regex string) []oplist.Instruct {
 	regex = lexer.Lex(regex)
-	success, parseTree = parser.Parse(regex)
+	success, parseTree := parser.Parse(regex)
 	if !success {
 		fmt.Println("Parsing Failed")
 		return nil

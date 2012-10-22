@@ -27,7 +27,7 @@ func (start *Start_) Parse(regex string, count *int) bool {
 		start.Empty = true
 		return true
 	}
-	if regex[count] == Pipe {
+	if regex[*count] == Pipe {
 		(*count)++ //consume input
 		start.Left = &Juxt{}
 		if !start.Left.Parse(regex, count) {
@@ -39,10 +39,11 @@ func (start *Start_) Parse(regex string, count *int) bool {
 		start.Empty = true
 		return true
 	}
+	return false
 }
 
 func (juxt *Juxt) Parse(regex string, count *int) bool {
-	if count >= len(regex) {
+	if *count >= len(regex) {
 		juxt.Empty = true
 		return true
 	}
@@ -55,11 +56,11 @@ func (juxt *Juxt) Parse(regex string, count *int) bool {
 }
 
 func (juxt *Juxt_) Parse(regex string, count *int) bool {
-	if count >= len(regex) {
+	if *count >= len(regex) {
 		juxt.Empty = true
 		return true
 	}
-	if regex[count] < Pipe { //that means its a regular character
+	if regex[*count] < Pipe { //that means its a regular character
 		juxt.Left = &Quant{}
 		if !juxt.Left.Parse(regex, count) {
 			return false
@@ -70,10 +71,11 @@ func (juxt *Juxt_) Parse(regex string, count *int) bool {
 		juxt.Empty = true
 		return true
 	}
+	return false
 }
 
 func (quant *Quant) Parse(regex string, count *int) bool {
-	if count >= len(regex) {
+	if *count >= len(regex) {
 		quant.Empty = true
 		return true
 	}
@@ -101,7 +103,7 @@ func (quant *Quant) Parse(regex string, count *int) bool {
 }
 
 func (ident *Ident) Parse(regex string, count *int) bool {
-	if count >= len(regex) {
+	if *count >= len(regex) {
 		ident.Empty = true
 		return true
 	}
@@ -118,11 +120,12 @@ func (ident *Ident) Parse(regex string, count *int) bool {
 			return false
 		}
 	} else if regex[*count] < Pipe {
-		ident.Char = regex[*count]
+		ident.Char = rune(regex[*count])
 		(*count)++
 		return true
 	} else {
 		return false //invalid character
 	}
+	return false
 }
 

@@ -12,14 +12,6 @@ const(
 	RParen
 )
 
-const(
-	Start = iota
-	Juxt
-	Quant
-	Ident
-	End
-)
-
 type Start struct {
 	Left *Juxt
 	Right *Start_
