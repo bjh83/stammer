@@ -1,6 +1,6 @@
 package parser
 
-import("oplist")
+import("github.com/bjh83/stammer/regex_compiler/oplist")
 
 func (start *Start) Generate() *OpList {
 	oplist := oplist.New()

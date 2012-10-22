@@ -1,7 +1,7 @@
 package main
 
 import(
-	"compiler"
+	compiler "stammer/regex_compiler"
 	"fmt"
 	"os"
 )

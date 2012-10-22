@@ -1,9 +1,9 @@
-package compiler
+package regex_compiler
 
 import(
-	"lexer"
-	"parser"
-	"oplist"
+	"github.com/bjh83/stammer/regex_compiler/lexer"
+	"github.com/bjh83/stammer/regex_compiler/parser"
+	"github.com/bjh83/stammer/regex_compiler/oplist"
 	"fmt"
 )
 
