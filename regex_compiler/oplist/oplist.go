@@ -50,7 +50,7 @@ func (list *OpList) AddJump(line int) *Instruct {
 	return list.add(Jump, line, -1)
 }
 
-func (list *OpList) AddChar(char rune) {
+func (list *OpList) AddChar(char uint8) {
 	//No reason for this to return a reference
 	list.add(Char, int(char), -1)
 }

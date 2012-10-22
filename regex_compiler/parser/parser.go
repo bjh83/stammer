@@ -1,15 +1,17 @@
 package parser
 
-import()
+import(
+	"fmt"
+)
 
-func Parse(regex string) (bool, *Start) {
+func Parse(regex []int) (bool, *Start) {
 	start := &Start{}
 	count := 0
 	success := start.Parse(regex, &count)
 	return success, start
 }
 
-func (start *Start) Parse(regex string, count *int) bool {
+func (start *Start) Parse(regex []int, count *int) bool {
 	if *count >= len(regex) {
 		start.Empty = true
 		return true
@@ -22,7 +24,7 @@ func (start *Start) Parse(regex string, count *int) bool {
 	return start.Right.Parse(regex, count)
 }
 
-func (start *Start_) Parse(regex string, count *int) bool {
+func (start *Start_) Parse(regex []int, count *int) bool {
 	if *count >= len(regex) {
 		start.Empty = true
 		return true
@@ -42,7 +44,7 @@ func (start *Start_) Parse(regex string, count *int) bool {
 	return false
 }
 
-func (juxt *Juxt) Parse(regex string, count *int) bool {
+func (juxt *Juxt) Parse(regex []int, count *int) bool {
 	if *count >= len(regex) {
 		juxt.Empty = true
 		return true
@@ -55,7 +57,7 @@ func (juxt *Juxt) Parse(regex string, count *int) bool {
 	return juxt.Right.Parse(regex, count)
 }
 
-func (juxt *Juxt_) Parse(regex string, count *int) bool {
+func (juxt *Juxt_) Parse(regex []int, count *int) bool {
 	if *count >= len(regex) {
 		juxt.Empty = true
 		return true
@@ -74,7 +76,7 @@ func (juxt *Juxt_) Parse(regex string, count *int) bool {
 	return false
 }
 
-func (quant *Quant) Parse(regex string, count *int) bool {
+func (quant *Quant) Parse(regex []int, count *int) bool {
 	if *count >= len(regex) {
 		quant.Empty = true
 		return true
@@ -98,11 +100,12 @@ func (quant *Quant) Parse(regex string, count *int) bool {
 		break
 	default:
 		quant.Type = Epsilon
+		break
 	}
 	return true
 }
 
-func (ident *Ident) Parse(regex string, count *int) bool {
+func (ident *Ident) Parse(regex []int, count *int) bool {
 	if *count >= len(regex) {
 		ident.Empty = true
 		return true
@@ -120,10 +123,12 @@ func (ident *Ident) Parse(regex string, count *int) bool {
 			return false
 		}
 	} else if regex[*count] < Pipe {
-		ident.Char = rune(regex[*count])
+		ident.Char = uint8(regex[*count])
+		fmt.Println("consumed: ", ident.Char, "count: ", *count)
 		(*count)++
 		return true
 	} else {
+		fmt.Println("ERROR: ", regex[*count], " not consumable")
 		return false //invalid character
 	}
 	return false

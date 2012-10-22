@@ -11,48 +11,60 @@ const(
 	Ques = iota + Buffer
 )
 
-func Lex(regex string) (out string) {
+func Lex(regex string) []int {
 	nextEscape := false
 	escaped := false
-	for i := 1; i < len(regex); i++ {
+	out := make([]int, len(regex))
+	out_index := 0
+	for i := 0; i < len(regex); i++ {
 		switch regex[i] {
 		case '\\':
 			if escaped {
-				out += "\\"
+				out[out_index] = '|'
+				out_index++
 				escaped = false
 			} else {
 				nextEscape = true
 			}
 		case '|':
 			if escaped {
-				out += "|"
+				out[out_index] = '|'
+				out_index++
 				escaped = false
 			} else {
-				out += string(Pipe)
+				out[out_index] = Pipe
+				out_index++
 			}
 		case '*':
 			if escaped {
-				out += "*"
+				out[out_index] = '*'
+				out_index++
 				escaped = false
 			} else {
-				out += string(Star)
+				out[out_index] = Star
+				out_index++
 			}
 		case '+':
 			if escaped {
-				out += "+"
+				out[out_index] = '+'
+				out_index++
 				escaped = false
 			} else {
-				out += string(Plus)
+				out[out_index] = Plus
+				out_index++
 			}
 		case '?':
 			if escaped {
-				out += "?"
+				out[out_index] = '?'
+				out_index++
 				escaped = false
 			} else {
-				out += string(Ques)
+				out[out_index] = Ques
+				out_index++
 			}
 		default:
-			out += string(regex[i])
+			out[out_index] = int(regex[i])
+			out_index++
 		}
 		if escaped {
 			//ERROR: Nothing consumed the escape

@@ -2,14 +2,16 @@ package parser
 
 import()
 
+const(Buffer = 255)
+
 const(
-	Pipe = iota
-	Star
-	Plus
-	Ques
-	Epsilon
-	LParen
-	RParen
+	Pipe = iota + Buffer
+	Star = iota + Buffer
+	Plus = iota + Buffer
+	Ques = iota + Buffer
+	Epsilon = iota + Buffer
+	LParen = iota + Buffer
+	RParen = iota + Buffer
 )
 
 type Start struct {
@@ -44,7 +46,7 @@ type Quant struct {
 
 type Ident struct {
 	Left *Start
-	Char rune
+	Char uint8
 	Empty bool
 }
 
