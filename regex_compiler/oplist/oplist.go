@@ -26,7 +26,7 @@ type OpNode struct {
 }
 
 func New() *OpList {
-	return OpList{}
+	return &OpList{}
 }
 
 func (list *OpList) add(opcode int, line1, line2 int) *Instruct {
@@ -72,11 +72,11 @@ func (list *OpList) Append(toAppend *OpList) {
 		return
 	}
 	for node := toAppend.Head; node != nil; node = node.Next {
-		if node.Line1 != -1 {
-			node.Line1 += toAdd
+		if node.Instruction.Line1 != -1 {
+			node.Instruction.Line1 += toAdd
 		}
-		if node.Line2 != -1 {
-			node.Line2 += toAdd
+		if node.Instruction.Line2 != -1 {
+			node.Instruction.Line2 += toAdd
 		}
 	}
 	list.Length += toAppend.Length
@@ -88,7 +88,8 @@ func (list *OpList) ToArray() []Instruct {
 	instructs := make([]Instruct, list.Length)
 	index := 0
 	for node := list.Head; node != nil; node = node.Next {
-		instructs[index++] = node.Instruction
+		instructs[index] = node.Instruction
+		index++
 	}
 	return instructs
 }

@@ -2,7 +2,7 @@ package parser
 
 import()
 
-func Parse(regex string) bool, *Start {
+func Parse(regex string) (bool, *Start) {
 	start := &Start{}
 	count := 0
 	success := start.Parse(regex, &count)
@@ -118,7 +118,8 @@ func (ident *Ident) Parse(regex string, count *int) bool {
 			return false
 		}
 	} else if regex[*count] < Pipe {
-		ident.Char = regex[(*count)++]
+		ident.Char = regex[*count]
+		(*count)++
 		return true
 	} else {
 		return false //invalid character
