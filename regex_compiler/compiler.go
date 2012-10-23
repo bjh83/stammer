@@ -20,6 +20,6 @@ func Compile(regex string) []oplist.Instruct {
 }
 
 func Declare(name, regex string) {
-	Variables[name] = regex
+	preprocessor.Variables[name] = regex
 }
 

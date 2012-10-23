@@ -12,7 +12,7 @@ const(
 	Delete = iota + Buffer
 )
 
-var Variables map[string]string
+var Variables map[string]string = make(map[string]string)
 
 func PreProcess(regex string) string {
 	regex = ProcessVariables(regex)
@@ -42,7 +42,12 @@ func ProcessVariables(regex string) string {
 				out += "{"
 			} else {
 				start := reg_index + 1
-				for ; regex[reg_index] != '}' && regex[reg_index - 1] != '\\'; reg_index++ {}
+				for ; regex[reg_index] != '}' || regex[reg_index - 1] == '\\'; reg_index++ {
+					if reg_index + 1 >= len(regex) {
+						fmt.Println("ERROR: no close for variable use")
+						break
+					}
+				}
 				end := reg_index
 				out += Variables[regex[start:end]]
 			}
@@ -50,9 +55,9 @@ func ProcessVariables(regex string) string {
 		default:
 			if escaped {
 				escaped = false
-				out += "\\" + regex[reg_index]
+				out += "\\" + string(regex[reg_index])
 			} else {
-				out += regex[reg_index]
+				out += string(regex[reg_index])
 			}
 			break
 		}
