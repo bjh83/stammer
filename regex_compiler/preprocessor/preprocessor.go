@@ -15,12 +15,12 @@ const(
 var Variables map[string]string = make(map[string]string)
 
 func PreProcess(regex string) string {
-	regex = ProcessVariables(regex)
+	regex = processVariables(regex)
 	lexed := lex(regex)
 	return expand(lexed)
 }
 
-func ProcessVariables(regex string) string {
+func processVariables(regex string) string {
 	nextEscape := false
 	escaped := false
 	var out string

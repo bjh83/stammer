@@ -9,7 +9,7 @@ import(
 func main() {
 	Declare("digit", "[0-9]")
 	Declare("letter", "[a-zA-Z]")
-	fmt.Println(ProcessVariables("{digit}"))
-	fmt.Println(ProcessVariables("{letter}"))
+	fmt.Println(PreProcess("{digit}+|{letter}"))
+	fmt.Println(PreProcess("\\{letter\\}|[_%]"))
 }
 
