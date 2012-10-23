@@ -19,14 +19,14 @@ func main() {
 			fmt.Fprintf(file, "START\n")
 			break
 		case Char:
-			fmt.Fprintf(file, "CHAR\t %c \n", instructions[index].Line1)
+			fmt.Fprintf(file, "CHAR\t%c\n", instructions[index].Line1)
 			break
 		case Jump:
-			fmt.Fprintf(file, "JMP\t", instructions[index].Line1, "\n")
+			fmt.Fprintf(file, "JMP\t\t%d\n", instructions[index].Line1 + 1)
 			break
 		case Split:
-			fmt.Fprintf(file, "SPLIT\t", instructions[index].Line1,
-			instructions[index].Line2, "\n")
+			fmt.Fprintf(file, "SPLIT\t%d\t%d\n", instructions[index].Line1 + 1,
+			instructions[index].Line2 + 1)
 			break
 		case Match:
 			fmt.Fprintf(file, "MATCH")

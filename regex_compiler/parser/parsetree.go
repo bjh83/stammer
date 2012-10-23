@@ -2,18 +2,6 @@ package parser
 
 import()
 
-const(Buffer = 255)
-
-const(
-	Pipe = iota + Buffer
-	Star = iota + Buffer
-	Plus = iota + Buffer
-	Ques = iota + Buffer
-	Epsilon = iota + Buffer
-	LParen = iota + Buffer
-	RParen = iota + Buffer
-)
-
 type Start struct {
 	Left *Juxt
 	Right *Start_

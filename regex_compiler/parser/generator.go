@@ -2,7 +2,7 @@ package parser
 
 import(
 	"../oplist"
-	"fmt"
+	. "../lexer"
 )
 
 func (start *Start) Generate() *oplist.OpList {
@@ -14,22 +14,28 @@ func (start *Start) Generate() *oplist.OpList {
 }
 
 func (start *Start) generate() *oplist.OpList {
-	oplist := start.Left.generate()
+	oplist := oplist.New()
 	if !start.Right.Empty {
 		//this means there should be a split here
-		save := oplist.AddSplit(oplist.Length - 1, -1) //we do not know the second address yet
+		save := oplist.AddSplit(1, -1) //we do not know the second address yet
+		oplist.Append(start.Left.generate())
+		save.Line2 = oplist.Length
 		oplist.Append(start.Right.generate())
-		save.Line2 = oplist.Length - 1
+	} else {
+		oplist.Append(start.Left.generate())
 	}
 	return oplist
 }
 
 func (start *Start_) generate() *oplist.OpList {
-	oplist := start.Left.generate()
+	oplist := oplist.New()
 	if !start.Right.Empty {
-		save := oplist.AddSplit(oplist.Length - 1, -1)
+		save := oplist.AddSplit(1, -1) //we do not know the second address yet
+		oplist.Append(start.Left.generate())
+		save.Line2 = oplist.Length
 		oplist.Append(start.Right.generate())
-		save.Line2 = oplist.Length - 1
+	} else {
+		oplist.Append(start.Left.generate())
 	}
 	return oplist
 }
@@ -61,7 +67,7 @@ func (quant *Quant) generate() *oplist.OpList {
 		break
 	case Plus:
 		oplist.Append(quant.Left.generate())
-		splitAddress := oplist.Length - 1
+		splitAddress := oplist.Length
 		save := oplist.AddSplit(splitAddress + 1, -1)
 		oplist.Append(quant.Left.generate())
 		oplist.AddJump(splitAddress)
@@ -85,7 +91,6 @@ func (ident *Ident) generate() *oplist.OpList {
 	}
 	oplist := oplist.New()
 	oplist.AddChar(ident.Char)
-	fmt.Println(ident.Char)
 	return oplist
 }
 
