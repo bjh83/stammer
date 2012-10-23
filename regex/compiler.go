@@ -5,10 +5,15 @@ import(
 	"./parser"
 	"./oplist"
 	"./preprocessor"
+	"./vm"
 	"fmt"
 )
 
-func Compile(regex string) []oplist.Instruct {
+type Regex struct {
+	Instructions []oplist.Instruct
+}
+
+func Compile(regex string) Regex {
 	regex = preprocessor.PreProcess(regex)
 	lexed := lexer.Lex(regex)
 	success, parseTree := parser.Parse(lexed)
@@ -16,7 +21,11 @@ func Compile(regex string) []oplist.Instruct {
 		fmt.Println("Parsing Failed")
 		return nil
 	}
-	return parseTree.Generate().ToArray()
+	return &Regex{parseTree.Generate().ToArray()}
+}
+
+func (regex *Regex) Match(input string) bool {
+	return vm.ThompsonVM(input, regex.Instructions)
 }
 
 func Declare(name, regex string) {
