@@ -3,6 +3,7 @@ package preprocessor
 import(
 	. "../lexer"
 	. "container/list"
+	"fmt"
 )
 
 const(
@@ -23,8 +24,8 @@ func lex(regex string) []int {
 	out := make([]int, len(regex))
 	out_index := 0
 	for reg_index := 0; reg_index < len(regex); reg_index++ {
-		escaped = nextEscaped
-		nextEscaped = false
+		escaped = nextEscape
+		nextEscape = false
 		switch regex[reg_index] {
 		case '\\':
 			if escaped {
@@ -33,7 +34,7 @@ func lex(regex string) []int {
 				out_index++
 				toDelete = nil
 			} else {
-				nextEscaped = true
+				nextEscape = true
 				out[out_index] = '\\'
 				toDelete = &out[out_index]
 				out_index++
@@ -49,6 +50,7 @@ func lex(regex string) []int {
 			} else {
 				out[out_index] = ClassOpen
 				out_index++
+				fmt.Println("ClassOpen at: ", out_index)
 			}
 			break
 		case ']':
@@ -57,12 +59,17 @@ func lex(regex string) []int {
 				out[out_index] = ']'
 				*toDelete = Delete
 				out_index++
-				to_Delete = nil
+				toDelete = nil
 			} else {
 				out[out_index] = ClassClose
 				out_index++
+				fmt.Println("ClassClose at: ", out_index)
 			}
 			break
+		default:
+			escaped = false
+			out[out_index] = int(regex[reg_index])
+			out_index++
 		}
 	}
 	return out
@@ -73,10 +80,10 @@ func expandClass(regex []int) string {
 	list.Init()
 	nextEscape := false
 	escaped := false
-	var toDelete *int
+	var toDelete *Element
 	for reg_index := 0; reg_index < len(regex); reg_index++ {
-		escaped = nextEscaped
-		nextEscaped = false
+		escaped = nextEscape
+		nextEscape = false
 		switch regex[reg_index] {
 		case '\\':
 			if escaped {
@@ -84,21 +91,20 @@ func expandClass(regex []int) string {
 				list.PushBack(int('\\'))
 				toDelete = nil
 			} else {
-				nextEscaped = true
-				toDelete = &int('\\')
-				list.PushBack(*toDelete)
+				nextEscape = true
+				toDelete = list.PushBack(int('\\'))
 			}
 			break
 		case '-':
 			if escaped {
 				escaped = false
 				list.PushBack(int('-'))
-				*toDelete = Delete
+				toDelete.Value = Delete
 			} else {
-				if reg_index > 1 && reg_index < len(regex) - 1 {
+				if reg_index > 0 && reg_index < len(regex) - 1 {
 					start := regex[reg_index - 1]
-					end := regex[reg_index + 1]
-					for char := uint8(start + 1); char < end; char++ {
+					end := uint8(regex[reg_index + 1])
+				for char := uint8(start + 1); char < end; char++ {
 						list.PushBack(int(char))
 					}
 				} else {
@@ -112,15 +118,15 @@ func expandClass(regex []int) string {
 			break
 		}
 	}
-	for e := list.Front(); e != nil; e = e.Next() { //Cleans out deletions
-		if int(e.Value) == Delete {
+	for e := list.Front(); e != nil; e = e.Next() {
+		if e.Value.(int) == Delete {
 			list.Remove(e)
 		}
 	}
-	out := string(list.Remove(list.Front()))
+	out := string(list.Remove(list.Front()).(int))
 	for e := list.Front(); e != nil; e = e.Next() {
 		out += string('|')
-		out += string(e.Value)
+		out += string(e.Value.(int))
 	}
 	return out
 }
@@ -130,12 +136,13 @@ func expand(regex []int) string {
 	for index := 0; index < len(regex); index++ {
 		if regex[index] == ClassOpen {
 			start := index + 1
-			for ; index != ClassClose; index++ {}
+			for ; regex[index] != ClassClose; index++ {}
 			end := index
+			fmt.Println("start: ", start, "\tend: ", end)
 			out += "("
 			out += expandClass(regex[start:end])
 			out += ")"
-		} else {
+		} else if regex[index] != Delete {
 			out += string(regex[index])
 		}
 	}
