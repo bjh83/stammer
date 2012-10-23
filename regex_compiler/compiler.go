@@ -19,3 +19,7 @@ func Compile(regex string) []oplist.Instruct {
 	return parseTree.Generate().ToArray()
 }
 
+func Declare(name, regex string) {
+	Variables[name] = regex
+}
+

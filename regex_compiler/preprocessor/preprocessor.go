@@ -12,9 +12,52 @@ const(
 	Delete = iota + Buffer
 )
 
+var Variables map[string]string
+
 func PreProcess(regex string) string {
+	regex = ProcessVariables(regex)
 	lexed := lex(regex)
 	return expand(lexed)
+}
+
+func ProcessVariables(regex string) string {
+	nextEscape := false
+	escaped := false
+	var out string
+	for reg_index := 0; reg_index < len(regex); reg_index++ {
+		escaped = nextEscape
+		nextEscape = false
+		switch regex[reg_index] {
+		case '\\':
+			if escaped {
+				escaped = false
+				out += "\\\\"
+			} else {
+				nextEscape = true
+			}
+			break
+		case '{':
+			if escaped {
+				escaped = false
+				out += "{"
+			} else {
+				start := reg_index + 1
+				for ; regex[reg_index] != '}' && regex[reg_index - 1] != '\\'; reg_index++ {}
+				end := reg_index
+				out += Variables[regex[start:end]]
+			}
+			break
+		default:
+			if escaped {
+				escaped = false
+				out += "\\" + regex[reg_index]
+			} else {
+				out += regex[reg_index]
+			}
+			break
+		}
+	}
+	return out
 }
 
 func lex(regex string) []int {
