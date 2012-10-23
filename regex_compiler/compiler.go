@@ -9,7 +9,6 @@ import(
 
 func Compile(regex string) []oplist.Instruct {
 	lexed := lexer.Lex(regex)
-	fmt.Println(lexed)
 	success, parseTree := parser.Parse(lexed)
 	if !success {
 		fmt.Println("Parsing Failed")

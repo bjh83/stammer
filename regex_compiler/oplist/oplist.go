@@ -72,7 +72,8 @@ func (list *OpList) Append(toAppend *OpList) {
 		return
 	}
 	for node := toAppend.Head; node != nil; node = node.Next {
-		if node.Instruction.Line1 != -1 {
+		//Only need to check it here since chars are not stored in Line2
+		if node.Instruction.Line1 != -1 && node.Instruction.OpCode != Char {
 			node.Instruction.Line1 += toAdd
 		}
 		if node.Instruction.Line2 != -1 {

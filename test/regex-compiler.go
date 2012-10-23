@@ -19,7 +19,7 @@ func main() {
 			fmt.Fprintf(file, "START\n")
 			break
 		case Char:
-			fmt.Fprintf(file, "CHAR\t", rune(instructions[index].Line1), "\n")
+			fmt.Fprintf(file, "CHAR\t %c \n", instructions[index].Line1)
 			break
 		case Jump:
 			fmt.Fprintf(file, "JMP\t", instructions[index].Line1, "\n")

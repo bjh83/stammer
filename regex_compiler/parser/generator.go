@@ -2,6 +2,7 @@ package parser
 
 import(
 	"../oplist"
+	"fmt"
 )
 
 func (start *Start) Generate() *oplist.OpList {
@@ -84,6 +85,7 @@ func (ident *Ident) generate() *oplist.OpList {
 	}
 	oplist := oplist.New()
 	oplist.AddChar(ident.Char)
+	fmt.Println(ident.Char)
 	return oplist
 }
 

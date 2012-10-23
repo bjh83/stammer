@@ -85,6 +85,10 @@ func (quant *Quant) Parse(regex []int, count *int) bool {
 	if !quant.Left.Parse(regex, count) {
 		return false
 	}
+	if *count >= len(regex) {
+		quant.Type = Epsilon
+		return true
+	}
 	switch(regex[*count]) {
 	case Star:
 		(*count)++
@@ -124,7 +128,6 @@ func (ident *Ident) Parse(regex []int, count *int) bool {
 		}
 	} else if regex[*count] < Pipe {
 		ident.Char = uint8(regex[*count])
-		fmt.Println("consumed: ", ident.Char, "count: ", *count)
 		(*count)++
 		return true
 	} else {
