@@ -1,7 +1,7 @@
 package main
 
 import(
-	. "../regex_compiler/preprocessor"
+	. "../regex/preprocessor"
 	"fmt"
 	"os"
 )

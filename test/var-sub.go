@@ -1,8 +1,8 @@
 package main
 
 import(
-	. "../regex_compiler"
-	. "../regex_compiler/preprocessor"
+	. "../regex"
+	. "../regex/preprocessor"
 	"fmt"
 )
 

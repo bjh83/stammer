@@ -1,4 +1,4 @@
-package regex_compiler
+package regex
 
 import(
 	"./lexer"

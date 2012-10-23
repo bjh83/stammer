@@ -1,8 +1,8 @@
 package main
 
 import(
-	compiler "../regex_compiler"
-	. "../regex_compiler/oplist"
+	compiler "../regex"
+	. "../regex/oplist"
 	"fmt"
 	"os"
 )
