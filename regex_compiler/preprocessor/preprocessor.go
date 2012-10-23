@@ -50,7 +50,6 @@ func lex(regex string) []int {
 			} else {
 				out[out_index] = ClassOpen
 				out_index++
-				fmt.Println("ClassOpen at: ", out_index)
 			}
 			break
 		case ']':
@@ -63,7 +62,6 @@ func lex(regex string) []int {
 			} else {
 				out[out_index] = ClassClose
 				out_index++
-				fmt.Println("ClassClose at: ", out_index)
 			}
 			break
 		default:
@@ -138,7 +136,6 @@ func expand(regex []int) string {
 			start := index + 1
 			for ; regex[index] != ClassClose; index++ {}
 			end := index
-			fmt.Println("start: ", start, "\tend: ", end)
 			out += "("
 			out += expandClass(regex[start:end])
 			out += ")"

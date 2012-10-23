@@ -4,10 +4,12 @@ import(
 	"./lexer"
 	"./parser"
 	"./oplist"
+	"./preprocessor"
 	"fmt"
 )
 
 func Compile(regex string) []oplist.Instruct {
+	regex = preprocessor.PreProcess(regex)
 	lexed := lexer.Lex(regex)
 	success, parseTree := parser.Parse(lexed)
 	if !success {
