@@ -1,0 +1,5 @@
+class ListNode<T>
+	element T
+	next ListNode<T>
+	previous ListNode<T>
+

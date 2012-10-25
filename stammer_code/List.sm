@@ -1,0 +1,18 @@
+class List<T>
+	var head ListNode<T>
+	var tail ListNode<T>
+	var size int
+
+	func List():
+		head := ListNode<T>()
+		tail := ListNode<T>()
+		head.next = tail
+		tail.previous = head
+		size = 0
+
+	func add(index int, element T):
+		if size <= index:
+			node = head.next
+			for i < index; i++:
+				node = node.next
+

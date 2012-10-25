@@ -1,0 +1,16 @@
+get("system")
+
+func main(arc int, argv []string)
+	system.println('Hello world!')
+
+func demo() List<int>
+	list = List<int>();
+	for i = 0; i < 100; i++
+		if !list.empty()
+			list.add(0);
+			list.add(1);
+		else
+			a = list.get(list.size() - 2)
+			b = list.get(list.size() - 1)
+			list.add(a + b)
+	return list;
