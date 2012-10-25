@@ -5,13 +5,16 @@ import("fmt")
 const(Buffer = 255)
 
 const(
+	//XXX: ANYTHING with precedence higher than the left associative 
+	//operators must be listed before RParen
+	LParen = iota + Buffer
+	//XXX:From this point on the parser will ignore if not explicitly handled!!!
+	RParen = iota + Buffer
 	Pipe = iota + Buffer
 	Star = iota + Buffer
 	Plus = iota + Buffer
 	Ques = iota + Buffer
 	Epsilon = iota + Buffer
-	LParen = iota + Buffer
-	RParen = iota + Buffer
 )
 
 func Lex(regex string) []int {

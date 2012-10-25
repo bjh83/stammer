@@ -63,7 +63,7 @@ func (juxt *Juxt_) Parse(regex []int, count *int) bool {
 		juxt.Empty = true
 		return true
 	}
-	if regex[*count] < Pipe { //that means its a regular character
+	if regex[*count] < RParen { //XXX:that means its a regular character
 		juxt.Left = &Quant{}
 		if !juxt.Left.Parse(regex, count) {
 			return false

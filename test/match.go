@@ -7,7 +7,7 @@ import(
 )
 
 func main() {
-	code := regex.Compile("[0-9]*.?[0-9]+")
+	code := regex.Compile("(abc)(de)")
 	instructions := code.Instructions
 	for index := 0; index < len(instructions); index++ {
 		switch instructions[index].OpCode {
