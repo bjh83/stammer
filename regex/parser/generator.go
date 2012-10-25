@@ -71,11 +71,7 @@ func (quant *Quant) generate() *oplist.OpList {
 		break
 	case Plus:
 		oplist.Append(quant.Left.generate())
-		splitAddress := oplist.Length
-		save := oplist.AddSplit(splitAddress + 1, -1)
-		oplist.Append(quant.Left.generate())
-		oplist.AddJump(splitAddress)
-		save.Line2 = oplist.Length
+		oplist.AddSplit(0, oplist.Length + 1) //Either do again or end
 		break
 	case Ques:
 		save := oplist.AddSplit(1, -1)
