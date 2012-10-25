@@ -13,13 +13,13 @@ type Regex struct {
 	Instructions []oplist.Instruct
 }
 
-func Compile(regex string) Regex {
+func Compile(regex string) *Regex {
 	regex = preprocessor.PreProcess(regex)
 	lexed := lexer.Lex(regex)
 	success, parseTree := parser.Parse(lexed)
 	if !success {
 		fmt.Println("Parsing Failed")
-		return nil
+		return &Regex{}
 	}
 	return &Regex{parseTree.Generate().ToArray()}
 }

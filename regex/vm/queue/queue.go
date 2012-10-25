@@ -5,7 +5,7 @@ import(
 )
 
 type Queue struct {
-	List list.List
+	List *list.List
 	Map map[int]bool
 }
 
@@ -25,7 +25,7 @@ func (queue *Queue) Push(pc int) {
 }
 
 func (queue *Queue) Pop() int {
-	ret := queue.List.Front().(int)
+	ret := queue.List.Front().Value.(int)
 	delete(queue.Map, ret)
 	return ret
 }
