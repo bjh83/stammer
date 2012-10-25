@@ -9,7 +9,7 @@ import(
 func main() {
 	regex.Declare("letter", "[a-zA-Z_]")
 	regex.Declare("digit", "[0-9]")
-	code := regex.Compile("{letter}+{digit}*")
+	code := regex.Compile("aa")
 	instructions := code.Instructions
 	for index := 0; index < len(instructions); index++ {
 		switch instructions[index].OpCode {
@@ -32,6 +32,6 @@ func main() {
 		}
 	}
 	fmt.Println("Compilation complete")
-	fmt.Println(code.Match("X133"))
+	fmt.Println(code.Match("a"))
 }
 
