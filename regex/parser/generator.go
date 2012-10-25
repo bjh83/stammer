@@ -17,10 +17,12 @@ func (start *Start) generate() *oplist.OpList {
 	oplist := oplist.New()
 	if !start.Right.Empty {
 		//this means there should be a split here
-		save := oplist.AddSplit(1, -1) //we do not know the second address yet
+		save1 := oplist.AddSplit(1, -1) //we do not know the second address yet
 		oplist.Append(start.Left.generate())
-		save.Line2 = oplist.Length
+		save2 := oplist.AddJump(-1)
+		save1.Line2 = oplist.Length
 		oplist.Append(start.Right.generate())
+		save2.Line1 = oplist.Length
 	} else {
 		oplist.Append(start.Left.generate())
 	}
@@ -30,10 +32,12 @@ func (start *Start) generate() *oplist.OpList {
 func (start *Start_) generate() *oplist.OpList {
 	oplist := oplist.New()
 	if !start.Right.Empty {
-		save := oplist.AddSplit(1, -1) //we do not know the second address yet
+		save1 := oplist.AddSplit(1, -1) //we do not know the second address yet
 		oplist.Append(start.Left.generate())
-		save.Line2 = oplist.Length
+		save2 := oplist.AddJump(-1)
+		save1.Line2 = oplist.Length
 		oplist.Append(start.Right.generate())
+		save2.Line1 = oplist.Length
 	} else {
 		oplist.Append(start.Left.generate())
 	}

@@ -8,7 +8,7 @@ import(
 )
 
 func main() {
-	instructions := compiler.Compile(os.Args[1])
+	instructions := compiler.Compile(os.Args[1]).Instructions
 	file, err := os.Create("test_output.txt")
 	if err != nil {
 		fmt.Println("ERROR: file could not be created")

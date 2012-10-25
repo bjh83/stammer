@@ -25,7 +25,7 @@ func (queue *Queue) Push(pc int) {
 }
 
 func (queue *Queue) Pop() int {
-	ret := queue.List.Front().Value.(int)
+	ret := queue.List.Remove(queue.List.Front()).(int)
 	delete(queue.Map, ret)
 	return ret
 }
