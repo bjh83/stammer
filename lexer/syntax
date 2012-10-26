@@ -1,0 +1,25 @@
+%D
+	"letter" D= "[a-zA-Z]"
+	"name_char" D= "({letter}|_)"
+	"digit" D= "[0-9]"
+	"white_space" D= "[\n\t ]"
+	"any" D= "[" + any + "]"
+%D
+%%
+	"{digit}+" INT_V VAL
+	"{digit}+.{digit}*|{digit}*.{digit}+" FLOAT_V VAL
+	"{any}+" STRING_V, VAL
+	"{name_char}({digit}|{name_char})*" VAR_V ID
+	"int" INT NIL
+	"float" FLOAT NIL
+	"string" STRING NIL
+	"var" VAR NIL
+	"class" CLASS NIL
+	"if" IF NIL
+	"for" FOR NIL
+	"func" FUNC NIL
+	"=" EQ NIL
+	"==" EQEQ NIL
+	"!" NOT NIL
+	"!=" NOTEQ NIL
+%%
