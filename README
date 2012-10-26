@@ -3,6 +3,7 @@ This is the bootstrap compiler for the stammer programming language created by B
 I started writing this compiler for educational purposes; thus, this compiler is completely written from scratch.
 
 Directory list:
-	-regex-compiler: contains the regular expression compiler and virtual machine.
+	-regex: contains the regular expression compiler.
 	-lexer: contains the lexical analyzer.
-	-parser: contains the parser
+	-test: contains some testing code.
+	-stammer_code: contains some examples of stammer.
