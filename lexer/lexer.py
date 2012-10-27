@@ -4,7 +4,10 @@ class Lexer:
 	fin
 	fout
 	declareSec = ''
-	funcList = []
+	functionCodeList = []
+	regexList = []
+	funcIndex = 0
+	regexIndex = 0
 
 	def _init_(self, fileName):
 		self.fileName = fileName
@@ -59,7 +62,7 @@ class Lexer:
 
 	def matching(words):
 		referecneId = self.regexHash(words[0])
-		self.funcList.append('func ' + self.nameGen() + '(input string) (type, valOrId) {\n'
+		self.functionCodeList.append('func ' + self.nameGen() + '(input string) (type, valOrId) {\n'
 				+ '\tif ' + referenceId + '.match(input) {\n'
 				+ '\t\treturn ' + words[1] + ', ' + words[2] + '\n'
 				+ '\t}\n'
@@ -67,5 +70,32 @@ class Lexer:
 				+ '}\n')
 
 	def regexHash(string):
+		referenceId = 'regex' + self.regexIndex
+		self.regexIndex += 1
+		self.declareSec += '\n\t' + referenceId + ' = regex.Compile(' + string + ')'
+		regexList.append(referenceId)
 		return referenceId
+
+	def nameGen():
+		name = 'func' + func + self.funcIndex
+		self.funcIndex += 1
+		funcList.append(name)
+		return name
+
+	def makeFile():
+		self.regexList.reverse()
+		self.fout.write('package lexer\n\n'
+				+ 'import(\n
+				\t\"../regex\"\n
+				)\n\n')
+		for regex in self.regexList:
+			self.fout.write('var ' + regex + ' regex.Regex\n')
+		self.fout.write('var funcArray []func(string)(int, int) = []func(string)(int, int) {')
+		for func in self.funcList:
+			self.fout.write(func + '
+		self.fout.write('\nfunc setUp() {\n'
+				+ self.declareSec + '\n'
+				+ '}\n\n')
+		for func in self.functionCodeList:
+			self.fout.write(func + '\n')
 
