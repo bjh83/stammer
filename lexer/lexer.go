@@ -6,6 +6,12 @@ import(
 	"fmt"
 )
 
+const(
+	ID = iota
+	VAL = iota
+	NIL = iota
+)
+
 type Token struct {
 	Type, Value int
 	ID string
@@ -23,7 +29,7 @@ func check(input string, regexs []func(string)(int, int)) list.List {
 		token := Token{Type: _type}
 		if idOrVal == ID {
 			token.ID = input
-		} else {
+		} else if idOrVal == VAL {
 			token.Value = int(input)
 		}
 		if _type != NULL {
@@ -41,10 +47,10 @@ func scan(input string, regexs []func(string)(int, int)) list.List {
 		lastPass := false
 		rightIndex++
 		for {
-			tokens := check(input[leftIndex:rightIndex], regexs)
+			tokens := check(input[leftIndex : rightIndex], regexs)
 			if lastPass {
 				if leftIndex >= rightIndex {
-					fmt.Println("Invalid character sequence at: ", input[leftIndex:leftIndex+10])
+					fmt.Println("Invalid character sequence at: ", input[leftIndex : leftIndex + 10])
 				}
 				output.PushBack(tokens.Front().Value.(Token))
 				break
