@@ -14,6 +14,15 @@ class Production:
 		toAppend = SymbolGroup()
 
 	def addSymbol(self, symbol):
+		toAppend.addSymbol(symbol)
+
+	def endGroup(self):
+		groupList.append(toAppend)
+		toAppend = SymbolGroup()
+
+	def end(self):
+		groupList.append(toAppend)
+		toAppend = None
 
 class Parser:
 	fin = None
@@ -26,3 +35,21 @@ class Parser:
 		fout = open(fileOutName, 'w')
 
 	def process(self):
+		word = ''
+		currentProduction = None
+		for line in fin:
+			for letter in line:
+				if letter == ':':
+					currentProduction = Production(word)
+					word = ''
+				elif letter == '|':
+					currentProduction.endGroup()
+				elif letter == ';':
+					currentProduction.end()
+					productionList.append(currentProduction)
+					currentProduction = None
+				elif letter == ' ':
+					currentProduction.append(word)
+					word = ''
+				else:
+					word += letter
