@@ -96,6 +96,7 @@ class Lexer:
 				+ '\t\"../regex\"\n'
 				+ ')\n\n')
 		self.fout.write('const(\n')
+		self.fout.write('\tNULL = iota\n')
 		for tipe in self.typeList:
 			self.fout.write('\t' + tipe + ' = iota' + '\n')
 		self.fout.write(')\n\n')

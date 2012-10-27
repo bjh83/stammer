@@ -3,11 +3,12 @@
 	"name_char" D= "({letter}|_)"
 	"digit" D= "[0-9]"
 	"white_space" D= "[\n\t ]"
+	"any" D= "[ -\\-]"
 %D
 %%
 	"{digit}+" INT_V VAL
 	"{digit}+.{digit}*|{digit}*.{digit}+" FLOAT_V VAL
-	"{any}+" STRING_V, VAL
+	"{any}+" STRING_V VAL
 	"{name_char}({digit}|{name_char})*" VAR_V ID
 	"int" INT NIL
 	"float" FLOAT NIL
