@@ -1,37 +1,42 @@
+#tools for generating the syntax.go file from a syntax file
 class Lexer:
-	fileName = ''
-	fileOutName = ''
-	fin
-	fout
+	fin = None
+	fout = None
 	declareSec = ''
 	functionCodeList = []
+	funcList = []
 	regexList = []
 	funcIndex = 0
 	regexIndex = 0
 
-	def _init_(self, fileName):
-		self.fileName = fileName
-		self.fileOutName = fileName + '.go'
+	def __init__(self, fileName):
+		fileOutName = fileName + '.go'
 		self.fin = open(fileName, 'r')
 		self.fout = open(fileOutName, 'w')
 
-	def strip(string):
+	def strip(self, string):
 		out = ''
 		strip = True
-		for letter in string:
-			if letter != ' ' or letter != '\t' or letter != '\n':
+		index = 0
+		while index < len(string):
+			letter = string[index]
+			index += 1
+			if letter != ' ' and letter != '\t' and letter != '\n':
 				strip = False
 			if not strip and letter != '\n':
 				out += letter
 		return out
 
-	def split(string):
+	def split(self, string):
 		out = []
 		current = ''
 		index = 0
+		inQuotes = False
 		while index < len(string):
 			while index < len(string):
-				if string[index] == ' ':
+				if string[index] == '\"':
+					inQuotes = not inQuotes
+				if string[index] == ' ' and not inQuotes:
 					index += 1
 					break
 				current += string[index]
@@ -40,7 +45,7 @@ class Lexer:
 			current = ''
 		return out
 
-	def lex():
+	def lex(self):
 		declaration = False
 		matching = False
 		for line in self.fin:
@@ -55,13 +60,14 @@ class Lexer:
 			if declaration:
 				self.declare(words)
 			if matching:
-				self.match(words)
+				self.matching(words)
+		self.makeFile()
 
-	def declare(words):
+	def declare(self, words):
 		self.declareSec += '\n\tregex.Declare(' + words[0] + ', ' + words[2] + ')'
 
-	def matching(words):
-		referecneId = self.regexHash(words[0])
+	def matching(self, words):
+		referenceId = self.regexHash(words[0])
 		self.functionCodeList.append('func ' + self.nameGen() + '(input string) (type, valOrId) {\n'
 				+ '\tif ' + referenceId + '.match(input) {\n'
 				+ '\t\treturn ' + words[1] + ', ' + words[2] + '\n'
@@ -69,30 +75,34 @@ class Lexer:
 				+ '\treturn NULL, -1\n'
 				+ '}\n')
 
-	def regexHash(string):
-		referenceId = 'regex' + self.regexIndex
+	def regexHash(self, string):
+		referenceId = 'regex' + str(self.regexIndex)
 		self.regexIndex += 1
 		self.declareSec += '\n\t' + referenceId + ' = regex.Compile(' + string + ')'
-		regexList.append(referenceId)
+		self.regexList.append(referenceId)
 		return referenceId
 
-	def nameGen():
-		name = 'func' + func + self.funcIndex
+	def nameGen(self):
+		name = 'func' + str(self.funcIndex)
 		self.funcIndex += 1
-		funcList.append(name)
+		self.funcList.append(name)
 		return name
 
-	def makeFile():
-		self.regexList.reverse()
+	def makeFile(self):
 		self.fout.write('package lexer\n\n'
-				+ 'import(\n
-				\t\"../regex\"\n
-				)\n\n')
+				+ 'import(\n'
+				+ '\t\"../regex\"\n'
+				+ ')\n\n')
 		for regex in self.regexList:
 			self.fout.write('var ' + regex + ' regex.Regex\n')
 		self.fout.write('var funcArray []func(string)(int, int) = []func(string)(int, int) {')
+		first = True
 		for func in self.funcList:
-			self.fout.write(func + '
+			if first:
+				self.fout.write(func)
+				first = False
+			self.fout.write(', ' + func)
+		self.fout.write('}\n')
 		self.fout.write('\nfunc setUp() {\n'
 				+ self.declareSec + '\n'
 				+ '}\n\n')

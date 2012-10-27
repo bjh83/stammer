@@ -3,7 +3,6 @@
 	"name_char" D= "({letter}|_)"
 	"digit" D= "[0-9]"
 	"white_space" D= "[\n\t ]"
-	"any" D= "[" + any + "]"
 %D
 %%
 	"{digit}+" INT_V VAL
