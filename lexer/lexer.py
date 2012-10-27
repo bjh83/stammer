@@ -6,6 +6,7 @@ class Lexer:
 	functionCodeList = []
 	funcList = []
 	regexList = []
+	typeList = []
 	funcIndex = 0
 	regexIndex = 0
 
@@ -68,6 +69,7 @@ class Lexer:
 
 	def matching(self, words):
 		referenceId = self.regexHash(words[0])
+		self.typeList.append(words[1])
 		self.functionCodeList.append('func ' + self.nameGen() + '(input string) (type, valOrId) {\n'
 				+ '\tif ' + referenceId + '.match(input) {\n'
 				+ '\t\treturn ' + words[1] + ', ' + words[2] + '\n'
@@ -93,6 +95,10 @@ class Lexer:
 				+ 'import(\n'
 				+ '\t\"../regex\"\n'
 				+ ')\n\n')
+		self.fout.write('const(\n')
+		for tipe in self.typeList:
+			self.fout.write('\t' + tipe + ' = iota' + '\n')
+		self.fout.write(')\n\n')
 		for regex in self.regexList:
 			self.fout.write('var ' + regex + ' regex.Regex\n')
 		self.fout.write('var funcArray []func(string)(int, int) = []func(string)(int, int) {')
