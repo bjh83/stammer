@@ -2,6 +2,7 @@
 class Lexer:
 	fin = None
 	fout = None
+	terminalList = 'terminalList'
 	declareSec = ''
 	functionCodeList = []
 	funcList = []
@@ -63,6 +64,7 @@ class Lexer:
 			if matching:
 				self.matching(words)
 		self.makeFile()
+		self.makeTermList()
 
 	def declare(self, words):
 		self.declareSec += '\n\tregex.Declare(' + words[0] + ', ' + words[2] + ')'
@@ -115,4 +117,9 @@ class Lexer:
 				+ '}\n\n')
 		for func in self.functionCodeList:
 			self.fout.write(func + '\n')
+	
+	def makeTermList(self):
+		f = open(self.terminalList, 'w')
+		for element in typeList:
+			f.write(element)
 
