@@ -33,7 +33,9 @@ class SimpleProduction:
 		group.addSymbol(symbol)
 
 class StateProduction(SimpleProduction):
-	state = 0
+	mark = 0
+	toReduce = False
+	stateGoto = 0
 
 	def __init__(self, simpleProduction):
 		self.start = simpleProduction.start
@@ -43,6 +45,13 @@ class StateProduction(SimpleProduction):
 		productionCopy = copy.deepcopy(self)
 		productionCopy.mark += 1
 		return productionCopy
+
+	def getMarkedSymbol(self):
+		if self.mark < len(self.group.symbolList):
+			return self.group.symbolList[mark]
+		else:
+			self.toReduce = True
+			return ''
 
 class ComplexProduction(SimpleProduciton):
 	groupList = []
@@ -67,28 +76,31 @@ class ComplexProduction(SimpleProduciton):
 
 class ProductionList:
 	productionList = {}
-	simpleProductionList
 	states = {}
 
 	def add(self, production):
 		self.productionList[production.start] = production
 
-	def firstClosure(self, productionName):
-		firstList = []
-		if productionName in productionList:
-			production = self.productionList[productionName]
-			symbolList = production.getSymbols(0)
-			for symbol in symbolList:
-				firstList.append(self.first(symbol))
-			return set(firstList)
-		else:
-			return [productionName] #We found a terminal! BTW, this also takes care of epsilon!
-
-	def follow(self, productionName, place):
-		firstList = []
+	def closure(self, productionName):
+		configuratingSet = [productionName]
 		if productionName in self.productionList:
-			production = self.productionList[productionName]
-			for group in production.groupList:
-				symbolList = group.symbolList
-				if place < len(symbolList):
-					self.states[symbolList[place]]
+			productions = self.productionList[productionName]
+			for production in productions:
+				symbol = production.getMarkedSymbol()
+				if symbol != '':
+					configuratingSet.extend(self.closure(symbol))
+		return set(configuratingSet)
+
+	def breakDown(self):
+		for production in self.productionList:
+			self.productionList[production] = StateProduction(
+					self.productionList[production].generateSimpleProductions())
+
+	def incrementProductionList(self):
+		for productionName in self.productionList:
+			newProductions = []
+			for production in self.productionList[productionName]:
+				newProductions.append(production.increment())
+			self.productionList[productionName] = newProductions
+
+	def successor(self, configurationSet, symbol):
