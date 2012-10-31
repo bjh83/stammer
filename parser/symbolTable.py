@@ -93,12 +93,10 @@ class ProductionList:
 	def unsave(self):
 		self.productionList = self.saveStack.pop()
 
-	def calculateSymbols(self):
+	def findSymbols(self):
+		self.symbolList.extend(terminals)
 		for productionName in self.productionList:
-			for symbolGroup in self.productionList[productionName].groupList:
-				for symbol in symbolGroup.symbolList:
-					if symbol not in self.productionList and symbol not in terminals:
-						self.symbolList.append(symbol)
+			self.symbolList.add(productionName)
 
 	def closure(self, productionName):
 		configuratingSet = [productionName]
