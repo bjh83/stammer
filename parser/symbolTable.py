@@ -75,11 +75,30 @@ class ComplexProduction(SimpleProduciton):
 		return productionList
 
 class ProductionList:
+	terminals = []
 	productionList = {}
-	states = {}
+	symbolList = []
+	saveStack = []
+
+	def __init__(self, teminals):
+		self.terminals = terminals
 
 	def add(self, production):
 		self.productionList[production.start] = production
+
+	def save(self):
+		self.saveStack.append(self.productionList)
+		self.productionList = copy.deepcopy(self.productionList)
+
+	def unsave(self):
+		self.productionList = self.saveStack.pop()
+
+	def calculateSymbols(self):
+		for productionName in self.productionList:
+			for symbolGroup in self.productionList[productionName].groupList:
+				for symbol in symbolGroup.symbolList:
+					if symbol not in self.productionList and symbol not in terminals:
+						self.symbolList.append(symbol)
 
 	def closure(self, productionName):
 		configuratingSet = [productionName]
@@ -89,14 +108,15 @@ class ProductionList:
 				symbol = production.getMarkedSymbol()
 				if symbol != '':
 					configuratingSet.extend(self.closure(symbol))
-		return set(configuratingSet)
+		return configuratingSet
 
 	def breakDown(self):
+		self.save()
 		for production in self.productionList:
 			self.productionList[production] = StateProduction(
 					self.productionList[production].generateSimpleProductions())
 
-	def incrementProductionList(self):
+	def increment(self):
 		for productionName in self.productionList:
 			newProductions = []
 			for production in self.productionList[productionName]:
@@ -104,3 +124,18 @@ class ProductionList:
 			self.productionList[productionName] = newProductions
 
 	def successor(self, configurationSet, symbol):
+		elementsWithSymbol = []
+		for productionName in self.productionList:
+			for production in self.productionList[productionName]:
+				if production.getMarkedSymbol() == symbol:
+					elementsWithSymbol.append(production)
+		incElementsWithSymbol = []
+		for production in elementsWithSymbol:
+			incElementWithSymbol.append(production.increment())
+		elementsWithSymbol = []
+		self.save() #XXX:must unsave()!!!
+		self.increment()
+		for production in incElementsWithSymbol:
+			elementsWithSymbol.extend(self.closure(production.start))
+		self.unsave()
+		return elementsWithSymbol
