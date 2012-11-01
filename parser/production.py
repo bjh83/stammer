@@ -43,6 +43,7 @@ class Pair:
 	production = None
 	dot = 0
 	successor = None
+	successorSymbol = None
 
 	def __init__(self, production, dot):
 		self.production = production
@@ -62,6 +63,9 @@ class Pair:
 
 	def advance(self):
 		return Pair(self.production, self.dot + 1)
+
+	def successor(self):
+		return (successorSymbol, successor)
 
 class ProductionList:
 	startSymbol = ''
@@ -110,11 +114,17 @@ class TableGenerator:
 	#TODO: refactor so that each pair remembers its successor
 	def successor(self, configList, symbol):
 		newConfig = []
+		toUpdate = []
 		for pair in configList:
 			productionName = pair.afterDot()
 			if productionName is not None and productionMap == symbol:
 				newConfig.append(pair.advance())
-		return self.closure(newConfig)
+				toUpdate.append(pair)
+		newConfig = self.closure(newConfig)
+		for pair in toUpdate:
+			pair.successor = newConfig
+			pair.successorSymbol = symbol
+		return newConfig
 
 	def buildConfigurationSets(self):
 		family = [self.closure([Pair(Production(self.startSymbol, [self.primeStrartSymbol]), 0)])]
