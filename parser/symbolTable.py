@@ -156,9 +156,12 @@ class ProductionList:
 				configStack.append(toAppend)
 		return configList
 
+	#TODO: So I basically need to define a better way to keep track of states
+	# since the current method is messy, inflexible, and does not provide a
+	# way to keep association with its successor
 	def constructTable(self):
 		configList = self.buildConfigurationSets()
-		symbolTable = SymbolTable(len(configList), len(self.symbolList))
+		symbolTable = SymbolTable(len(self.symbolList), len(configList))
 		configIndex = 0
 		while configIndex < len(configList):
 			configState = configList[configIndex]
@@ -167,17 +170,21 @@ class ProductionList:
 					symbol = production.group[production.mark - 1]
 					#TODO: Need to figure out what the reduction is!!!
 					symbolTable.setRow(configIndex, 'reduce')
-				if #TODO: Left off here
-
+				if production.start == self.start and production.mark == len(production.group):
+					symbolTable.add(symbols.index('$'), configIndex, 'accept')
+				if #TODO: Figure out how to match states
+				if #TODO: Same as above
+			configIndex += 1
+		return symbolTable
 
 class SymbolTable:
 	table = []
 	size = 0
 	xMult = 0
 
-	def __init__(self, numOfStates, numOfSymbols):
-		self.size = numOfStates * numOfSymbols
-		self.xMult = numOfStates
+	def __init__(self, numOfSymbols, numOfStates):
+		self.size = numOfSymbols
+		self.xMult = numOfSymbols
 		index = 0
 		while index < self.size:
 			table.append(0)
