@@ -12,7 +12,8 @@ I started writing this compiler for educational purposes; thus, this compiler is
 
 Directory list:
 ---------------
-- regex: contains the regular expression compiler.
-- lexer: contains the lexical analyzer.
+- regex: contains the regular expression compiler and virtual machine
+- lexer: contains the code to generate a lexical analyzer.
+- parser: contains a parser generater
 - test: contains some testing code.
 - stammer_code: contains some examples of stammer.
