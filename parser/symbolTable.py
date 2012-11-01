@@ -75,13 +75,16 @@ class ComplexProduction(SimpleProduciton):
 		return productionList
 
 class ProductionList:
+	startSymbol = ''
 	terminals = []
 	productionList = {}
 	symbolList = []
 	saveStack = []
+	configList = []
 
-	def __init__(self, teminals):
+	def __init__(self, startSymbol, terminals):
 		self.terminals = terminals
+		self.startSymbol = startSymbol
 
 	def add(self, production):
 		self.productionList[production.start] = production
@@ -98,6 +101,7 @@ class ProductionList:
 		for productionName in self.productionList:
 			self.symbolList.add(productionName)
 
+	#TODO: This does not handle closures with respect to marks properly
 	def closure(self, productionName):
 		configuratingSet = [productionName]
 		if productionName in self.productionList:
@@ -137,3 +141,57 @@ class ProductionList:
 			elementsWithSymbol.extend(self.closure(production.start))
 		self.unsave()
 		return elementsWithSymbol
+
+	def buildConfiguratingSets(self):
+		startPrime = self.startSymbol + '\''
+		self.productionList[startPrime] = StateProduction(SimpleProduction(startPrime, self.startSymbol))
+		self.startSymbol = startPrime
+		configStack = [self.closure(startPrime)]
+		configList = configStack
+		while len(configStack) > 0:
+			currentConfig = configStack.pop()
+			for symbol in self.symbolList:
+				toAppend = self.successor(currentConfig, symbol)
+				configList.append(toAppend)
+				configStack.append(toAppend)
+		return configList
+
+	def constructTable(self):
+		configList = self.buildConfigurationSets()
+		symbolTable = SymbolTable(len(configList), len(self.symbolList))
+		configIndex = 0
+		while configIndex < len(configList):
+			configState = configList[configIndex]
+			for production in configState:
+				if production.mark > 0:
+					symbol = production.group[production.mark - 1]
+					#TODO: Need to figure out what the reduction is!!!
+					symbolTable.setRow(configIndex, 'reduce')
+				if #TODO: Left off here
+
+
+class SymbolTable:
+	table = []
+	size = 0
+	xMult = 0
+
+	def __init__(self, numOfStates, numOfSymbols):
+		self.size = numOfStates * numOfSymbols
+		self.xMult = numOfStates
+		index = 0
+		while index < self.size:
+			table.append(0)
+			index++
+
+	def add(self, x, y, element):
+		self.table[x + y * self.xMult] = element
+
+	def setRow(self, y, element):
+		x = 0
+		while x < self.xMult:
+			self.add(x, y, element)
+			x += 1
+
+	def get(self, x, y):
+		return self.table[x + y * self.xMult]
+
