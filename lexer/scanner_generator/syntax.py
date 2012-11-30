@@ -15,4 +15,3 @@ def render():
 		]
 	generator.generator(regex_variables, tokens).build()
 
-render()

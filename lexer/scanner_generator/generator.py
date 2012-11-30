@@ -25,7 +25,7 @@ class generator:
 	fileOut = ''
 
 	def __init__(self, regex_variables, tokens, fileOut='scanner.go'):
-		env = Environment(loader=PackageLoader('templates', 'templates'))
+		env = Environment(loader=PackageLoader('scanner_generator', 'templates'))
 		self.template = env.get_template('scanner.go')
 		self.tokens = tokens
 		self.regex_variables = regex_variables
