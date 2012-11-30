@@ -4,15 +4,9 @@ import generator
 def render():
 	regex_variables = [('digit', r'[0-9]'), ('letter', r'[a-zA-Z]')]
 	tokens = [
-		('constant', r'{digit}+(\.{digit}+)?|\.{digit}+', '''
-		{
-			ret, _ := strconv.ParseFloat($$, 32)
-			return float32(ret)
-		}'''),
-		('identifier', r'{letter}+', '''
-		{
-			return $$
-		}'''),
+		('constant', r'{digit}+(\.{digit}+)?|\.{digit}+', 
+		'''output, _ := strconv.ParseFloat(input, 32)'''),
+		('identifier', r'{letter}+', '''output = input'''),
 		('', r'[ /t/n]', ''), #Throw away whitespace
 		('plus', r'\+', ''),
 		('minus', r'-', ''),
@@ -21,3 +15,4 @@ def render():
 		]
 	generator.generator(regex_variables, tokens).build()
 
+render()

@@ -4,19 +4,19 @@ import(
 	"stammer/regex"
 )
 
-{% for var in name_vars -%}
+{% for var in name_vars %}
 var {{var[0]}}_regex regex.Regex
-{%- endfor %}
+{%- endfor -%}
 
 {# var regex_functions []func(string)(Token) = []func(string)(Token) {{"{"}}{{name_vars|join("_func, ")}}{{"_func }"}} #}
 
 func startup() {
 	{% for var in declaration_vars -%}
 	regex.Declare({{var[0]}}, {{var[1]}})
-	{%- endfor %}
+	{% endfor -%}
 	{% for var in name_vars -%}
 	{{var[0]}}_regex = regex.Compile({{var[1]}})
-	{%- endfor %}
+	{% endfor -%}
 }
 
 {% for var in name_vars -%}
@@ -27,4 +27,5 @@ func {{var[0]}}_func(input string) Token {
 	}
 	return Token{{"{NULL}"}}
 }
+
 {% endfor %}
